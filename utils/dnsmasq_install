@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DOCKER_HOSTS="docker.hosts"
+DOCKER_DNS="/etc/dnsmasq.d/docker.dns"
+
+apt-get install -y dnsmasq
+
+echo "addn-hosts=${PWD}/${DOCKER_HOSTS}" > ${DOCKER_DNS}
+echo "interface=docker0" >> ${DOCKER_DNS}

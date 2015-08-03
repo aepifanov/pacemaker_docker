@@ -1,0 +1,7 @@
+#!/bin/bash
+
+IP=$(ifconfig eth0 | awk 'sub(/inet addr:/,""){print $1}')
+sed -i "s/bindnetaddr: changeme/bindnetaddr: $IP/g" /etc/corosync/corosync.conf
+
+service corosync start
+service pacemaker start
