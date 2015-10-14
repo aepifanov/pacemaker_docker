@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo -e "\n### Remove host pcmk3"
+docker stop pcmk3 && docker rm pcmk3
+echo -e "\n### Remove host pcmk2"
+docker stop pcmk2 && docker rm pcmk2
+echo -e "\n### Remove host pcmk1"
+docker stop pcmk1 && docker rm pcmk1

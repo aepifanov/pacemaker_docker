@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 
 # System update
@@ -6,11 +6,11 @@ apt-get update
 apt-get dist-upgrade
 
 # Install pacemaker
-apt-get install -y --no-install-recommends pacemaker wget
+apt-get install -y --no-install-recommends pacemaker corosync
 sed -i 's/no/yes/g' /etc/default/corosync
 cp -f /build/my_init/pacemaker /etc/my_init.d/
 cp -f /build/config/corosync.conf /etc/corosync/
-corosync-keygen
+cp -f /build/config/pacemaker /etc/corosync/service.d/
 
 # Download and install pcs
 apt-get install -y --no-install-recommends wget unzip make

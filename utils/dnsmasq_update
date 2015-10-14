@@ -4,7 +4,7 @@
 CONTAINER_DOMAIN=
 
 # Path to the addn-hosts file
-CONTAINER_HOSTS="docker.hosts"
+CONTAINER_HOSTS="/tmp/docker.hosts"
 
 # Add hostname and host IP
 HOSTNAME=$(hostname)
@@ -16,7 +16,7 @@ echo "$HOST_IP $HOSTNAME" >> $CONTAINER_HOSTS
 for CID in `docker ps -q`; do
     IP=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID`
     NAME=`docker inspect --format '{{ .Config.Hostname }}' $CID`
-    echo "$IP  $NAME" >> $CONTAINER_HOSTS
+    echo "$IP $NAME" >> $CONTAINER_HOSTS
 done
 
 # Ask dnsmasq to reload addn-hosts

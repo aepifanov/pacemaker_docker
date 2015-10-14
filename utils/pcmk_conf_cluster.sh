@@ -1,7 +1,6 @@
 #!/bin/bash
 
 USER=root
-IF=eth0
 NODES="$@"
 ID=0
 CRM_CONF_TEMPL=./conf/corosync.conf.udpu.templ
@@ -10,8 +9,8 @@ CRM_CONF=./corosync.conf
 
 # Find online nodes from the list and add them into corosync.conf
 cp $CRM_CONF_TEMPL $CRM_CONF_
-for HOST in $NODES; do
-    IP=$(ssh -o LogLevel=quiet $USER@$HOST ifconfig $IF | awk 'sub(/inet addr:/,""){print $1}')
+for HOST in ${NODES}; do
+    IP=$(host $HOST | awk '{print $4}')
     if [ -z $IP ] ; then
         continue
     fi
@@ -22,14 +21,15 @@ for HOST in $NODES; do
 done
 
 # Finish tuning corosync.conf with unique params, upload it to the node and restart pacemaker
-for IP in ${IPS[@]}; do
+for NODE in ${NODES}; do
+    echo -e "\n### Adding to the cluster $NODE"
     cp -f $CRM_CONF_ $CRM_CONF
-    sed -i "s/ringnumber:  0/ringnumber:  0\n    bindnetaddr: $IP/g" $CRM_CONF
-    scp $CRM_CONF $USER@$IP:/etc/corosync/
-    ssh $USER@$IP service pacemaker stop
-    ssh $USER@$IP service corosync stop
-    ssh $USER@$IP service corosync start
-    ssh $USER@$IP service pacemaker start
+    sed -i "s/ringnumber:  0/ringnumber:  0\n    bindnetaddr: $NODE/g" $CRM_CONF
+    scp -q $CRM_CONF $USER@$NODE:/etc/corosync/
+    ssh -q $USER@$NODE service pacemaker stop
+    ssh -q $USER@$NODE service corosync stop
+    ssh -q $USER@$NODE service corosync start
+    ssh -q $USER@$NODE service pacemaker start
 done
 
 # Cleanup tmp files

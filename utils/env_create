@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./pcmk_add_host.sh pcmk1
+./pcmk_add_host.sh pcmk2
+./pcmk_add_host.sh pcmk3
+./pcmk_conf_cluster.sh pcmk1 pcmk2 pcmk3
